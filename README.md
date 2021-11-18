@@ -4,7 +4,7 @@
 ~~25-cent term for a 5-cent concept!~~
 
 ![PyPI](https://img.shields.io/pypi/v/tepet)
-![Travis (.org)](https://img.shields.io/travis/toshakins/tepet)
+[![Test Python package](https://github.com/Toshakins/tepet/actions/workflows/python-package.yml/badge.svg)](https://github.com/Toshakins/tepet/actions/workflows/python-package.yml)
 
 ## What is this
 tepet is a small utility to help you understand and track execution time of your code. You could write it anytime, but why do this every other day?

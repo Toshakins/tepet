@@ -46,8 +46,7 @@ class Timer:
         self.gcold = gc.isenabled()
         gc.disable()
         time_readable = _readable_time()
-        _printer('{time_readable} {scope} started'.format(
-            time_readable=time_readable, scope=self.scope))
+        _printer(f'{time_readable} {self.scope} started')
         self.start = time.perf_counter()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -57,10 +56,7 @@ class Timer:
         time_readable = _readable_time()
         result_time = end - self.start
         _printer(
-            '{time_readable} {scope} elapsed {result_time:.5f} seconds'.format(
-                time_readable=time_readable, scope=self.scope,
-                result_time=result_time
-            ))
+            f'{time_readable} {self.scope} elapsed {result_time:.5f} seconds')
 
     def __call__(self, func):
         def callback(*args, **kwargs):
