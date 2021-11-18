@@ -3,7 +3,7 @@
 
 ~~25-cent term for a 5-cent concept!~~
 
-![PyPI](https://img.shields.io/pypi/v/tepet)
+[![PyPI](https://img.shields.io/pypi/v/tepet)](https://pypi.org/project/tepet/)
 [![Test Python package](https://github.com/Toshakins/tepet/actions/workflows/python-package.yml/badge.svg)](https://github.com/Toshakins/tepet/actions/workflows/python-package.yml)
 
 ## What is this
