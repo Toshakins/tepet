@@ -37,8 +37,9 @@ class Timer:
     > 2020 May 31 19:36:30 +0000 ==== started
     > 2020 May 31 19:36:30 +0000 ==== elapses 0.00000 seconds
     """
-    def __init__(self, scope=None):
+    def __init__(self, scope=None, printer=_printer):
         self.scope = scope or '===='
+        self.printer = printer
         self.gcold = None
         self.start = None
 
@@ -46,7 +47,7 @@ class Timer:
         self.gcold = gc.isenabled()
         gc.disable()
         time_readable = _readable_time()
-        _printer(f'{time_readable} {self.scope} started')
+        self.printer(f'{time_readable} {self.scope} started')
         self.start = time.perf_counter()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -55,7 +56,7 @@ class Timer:
             gc.enable()
         time_readable = _readable_time()
         result_time = end - self.start
-        _printer(
+        self.printer(
             f'{time_readable} {self.scope} elapsed {result_time:.5f} seconds')
 
     def __call__(self, func):
