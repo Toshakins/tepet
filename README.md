@@ -11,10 +11,12 @@ tepet is a small utility to help you understand and track execution time of your
 
 ## Usage
 Can be used as a context manager
+
 ```python
-from tepet import Timer
-with Timer():
-  print('doing stuff...')
+from tepet import PerfTimer
+
+with PerfTimer():
+    print('doing stuff...')
 
 # Output:
 #
@@ -24,8 +26,8 @@ with Timer():
 ```
 and a function decorator
 ```python
-from tepet import Timer
-@Timer()
+from tepet import PerfTimer
+@PerfTimer()
 def work():
   print("working...")
 
@@ -36,3 +38,19 @@ work()
 # > 2020 May 31 20:14:25 +0000 ==== started
 # > working...
 # > 2020 May 31 20:14:25 +0000 ==== elapsed 0.00001 seconds
+```
+
+Also, can be used in production environments for naive tracking:
+
+```python
+from tepet import Timer
+
+def printer(seconds):
+        print(f'code block 1: {seconds:.5f} elapsed')
+
+with Timer(printer):
+    ...
+
+# Output:
+# > code block 1: 0.00000 elapsed
+```

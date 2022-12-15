@@ -1,5 +1,5 @@
 """Small timing tool to run performance analysis"""
 
-__version__ = "0.0.3"
+__version__ = "0.1.0"
 
-from tepet.timer import Timer  # noqa
+from tepet.timer import PerfTimer  # noqa
