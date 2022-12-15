@@ -3,8 +3,7 @@ from unittest.mock import call, Mock
 
 from freezegun import freeze_time
 
-from tepet import PerfTimer
-from tepet.timer import Timer
+from tepet import PerfTimer, Timer
 
 
 class PerfTimerTest(unittest.TestCase):
