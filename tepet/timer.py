@@ -4,9 +4,14 @@ garbage collection(it may affect execution time) and using a timing
 function designed to performance-measurement use cases.
 """
 import gc
+import logging
 import time
 
-__all__ = ['Timer']
+__all__ = ['PerfTimer', 'Timer']
+
+from typing import Callable, Optional
+
+logger = logging.getLogger(__name__)
 
 
 def _readable_time():
@@ -18,18 +23,33 @@ def _printer(stuff):
     print(stuff)
 
 
-class Timer:
+class _ContextDecorator:
+    def __call__(self, func):
+        def callback(*args, **kwargs):
+            with self:
+                func(*args, **kwargs)
+
+        return callback
+
+    def __enter__(self):
+        raise NotImplementedError
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        raise NotImplementedError
+
+
+class PerfTimer(_ContextDecorator):
     """
     This class can be used as both context manager and function decorator.
     It prints string with formatted time before executing targeted code, and
     follows with the message about time spent executing user's code.
     Examples:
-    with Timer():
+    with PerfTimer():
         ...
 
     or
-
-    @Timer()
+ø
+    @PerfTimer()
     def workload():
         ...
 
@@ -59,9 +79,36 @@ class Timer:
         self.printer(
             f'{time_readable} {self.scope} elapsed {result_time:.5f} seconds')
 
-    def __call__(self, func):
-        def callback(*args, **kwargs):
-            with self:
-                func(*args, **kwargs)
 
-        return callback
+class Timer(_ContextDecorator):
+    """
+    This class can be used as both context manager and function decorator.
+    It expects function as constructor parameter that is executed at the end
+    of the code section.
+    Examples:
+    def printer(seconds):
+        print(f'code block 1: {seconds:.5f} elapsed')
+
+    with Timer(printer):
+        ...
+
+    or
+
+    @Timer(printer)
+    def workload():
+        ...
+
+    Example output will be like:
+    > code block 1: 0.00000 elapsed
+    """
+    def __init__(self, time_teller: Optional[Callable[[float], None]]):
+        self.time_teller = time_teller
+        self.start = None
+
+    def __enter__(self):
+        self.start = time.perf_counter()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        end = time.perf_counter()
+        result_time = end - self.start
+        self.time_teller(result_time)

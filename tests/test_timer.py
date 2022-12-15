@@ -3,10 +3,11 @@ from unittest.mock import call, Mock
 
 from freezegun import freeze_time
 
-from tepet import Timer
+from tepet import PerfTimer
+from tepet.timer import Timer
 
 
-class TimerTest(unittest.TestCase):
+class PerfTimerTest(unittest.TestCase):
     def setUp(self):
         self.printer_mock = Mock()
 
@@ -19,12 +20,12 @@ class TimerTest(unittest.TestCase):
 
     def test_timer_works_as_a_contextmanager(self):
         with freeze_time("1970-01-01"):
-            with Timer(printer=self.printer_mock):
+            with PerfTimer(printer=self.printer_mock):
                 pass # noqa
         self.assertCallsPrinterCorrectly()
 
     def test_timer_works_as_a_decorator(self):
-        @Timer(printer=self.printer_mock)
+        @PerfTimer(printer=self.printer_mock)
         def workload():
             # noqa
             pass
@@ -32,3 +33,27 @@ class TimerTest(unittest.TestCase):
         with freeze_time("1970-01-01"):
             workload()
         self.assertCallsPrinterCorrectly()
+
+
+class TimerTest(unittest.TestCase):
+    def setUp(self):
+        self.printer_mock = Mock()
+
+    def assertHasCorrectCallCount(self):
+        self.assertEqual(self.printer_mock.call_count, 1)
+
+    def test_timer_works_as_a_contextmanager(self):
+        with freeze_time("1970-01-01"):
+            with Timer(self.printer_mock):
+                pass # noqa
+        self.assertHasCorrectCallCount()
+
+    def test_timer_works_as_a_decorator(self):
+        @Timer(self.printer_mock)
+        def workload():
+            # noqa
+            pass
+
+        with freeze_time("1970-01-01"):
+            workload()
+        self.assertHasCorrectCallCount()
